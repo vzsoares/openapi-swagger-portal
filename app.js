@@ -1,4 +1,28 @@
 document.addEventListener("alpine:init", () => {
+    Alpine.directive("include", async (el, { expression, modifiers }) => {
+        try {
+            // Fetch the content from the specified URL using the Fetch API
+            const response = await fetch(expression);
+
+            if (modifiers.includes("markdown")) {
+                const content = await response.text();
+                // Parse the Markdown content using the marked library
+                const parsedContent = marked(content);
+
+                // Inject the parsed content into the element using x-html directive
+                el.innerHTML = parsedContent;
+                return;
+            }
+
+            // Get the pure text response
+            const content = await response.text();
+            // Inject the fetched content into the element using x-html directive
+            el.innerHTML = content;
+        } catch (error) {
+            console.error("Error fetching content:", error);
+        }
+    });
+
     Alpine.data("apiPortal", () => ({
         domains: [
             {
@@ -33,7 +57,7 @@ document.addEventListener("alpine:init", () => {
                     {
                         name: "Products API",
                         url: "https://petstore.swagger.io/v2/swagger.json?5",
-                    }, // Replace with actual URLs
+                    },
                     {
                         name: "Categories API",
                         url: "https://petstore.swagger.io/v2/swagger.json?6",
