@@ -44,8 +44,13 @@ document.addEventListener("alpine:init", () => {
         selectedDomain: null,
         selectedApi: null,
         swaggerUI: null,
+        mobileMenuOpen: false,
+        sidebarOpen: false,
 
         init() {
+            // Set default sidebar state based on screen size
+            this.sidebarOpen = window.innerWidth >= 768;
+
             // Initialize with the first API from the first domain
             if (this.domains.length > 0 && this.domains[0].apis.length > 0) {
                 this.selectedDomain = this.domains[0].name;
@@ -64,6 +69,18 @@ document.addEventListener("alpine:init", () => {
                     this.selectDomain(domain);
                 }
             }
+
+            // Close mobile menu when resizing to desktop
+            window.addEventListener("resize", () => {
+                if (window.innerWidth >= 1024) {
+                    this.mobileMenuOpen = false;
+                }
+                if (window.innerWidth >= 768) {
+                    this.sidebarOpen = true;
+                } else {
+                    this.sidebarOpen = false;
+                }
+            });
         },
 
         selectDomain(domainName) {
@@ -119,6 +136,11 @@ document.addEventListener("alpine:init", () => {
 
             // Export to window for use in custom js
             window.ui = this.swaggerUI;
+
+            // Close sidebar on mobile after selecting an API
+            if (window.innerWidth < 768) {
+                this.sidebarOpen = false;
+            }
         },
     }));
 });

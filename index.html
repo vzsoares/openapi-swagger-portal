@@ -31,41 +31,148 @@
                 <div class="flex items-center">
                     <!-- Logo Placeholder -->
                     <div class="text-2xl font-bold mr-8">API Portal</div>
+
+                    <!-- Mobile menu button -->
+                    <button
+                        @click="mobileMenuOpen = !mobileMenuOpen"
+                        class="lg:hidden text-gray-300 hover:text-white focus:outline-none ml-2"
+                    >
+                        <svg
+                            class="h-6 w-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                                x-show="!mobileMenuOpen"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                                x-show="mobileMenuOpen"
+                            />
+                        </svg>
+                    </button>
                 </div>
-                <nav>
+
+                <!-- Sidebar toggle button -->
+                <button
+                    @click="sidebarOpen = !sidebarOpen"
+                    class="md:hidden text-gray-300 hover:text-white focus:outline-none mx-2"
+                >
+                    <svg
+                        class="h-6 w-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
+                        />
+                    </svg>
+                </button>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:block">
                     <ul class="flex space-x-6">
                         <li><a href="#" class="hover:text-blue-300">Api</a></li>
-                        <li><a href="#" class="hover:text-blue-300">Documentation</a></li>
-                        <li><a href="#" class="hover:text-blue-300">Support</a></li>
+                        <li>
+                            <a href="#" class="hover:text-blue-300"
+                                >Documentation</a
+                            >
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-blue-300">Support</a>
+                        </li>
                     </ul>
                 </nav>
             </div>
+
+            <!-- Mobile Navigation Menu -->
+            <nav
+                x-show="mobileMenuOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 transform -translate-y-2"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 transform translate-y-0"
+                x-transition:leave-end="opacity-0 transform -translate-y-2"
+                class="lg:hidden pt-4"
+            >
+                <ul class="space-y-2">
+                    <li>
+                        <a
+                            href="#"
+                            class="block hover:bg-gray-700 px-2 py-1 rounded"
+                            >Api</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            class="block hover:bg-gray-700 px-2 py-1 rounded"
+                            >Documentation</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            class="block hover:bg-gray-700 px-2 py-1 rounded"
+                            >Support</a
+                        >
+                    </li>
+                </ul>
+            </nav>
         </header>
 
         <div class="flex flex-1 overflow-hidden">
             <!-- Sidebar Navigation -->
-            <aside class="w-64 bg-white shadow-md p-4 overflow-y-auto">
+            <aside
+                class="bg-white shadow-md p-4 overflow-y-auto transition-all duration-300 ease-in-out"
+                :class="{'w-64 md:w-64': sidebarOpen, 'w-0 md:w-64 hidden md:block': !sidebarOpen}"
+            >
                 <div class="mb-4">
                     <h3 class="text-lg font-semibold mb-2">Domains</h3>
                     <ul class="space-y-2" id="domain-list">
                         <template x-for="domain in domains" :key="domain.name">
                             <li>
-                                <div 
+                                <div
                                     class="cursor-pointer hover:bg-gray-100 p-2 rounded flex justify-between items-center"
                                     :class="{'bg-blue-100': selectedDomain === domain.name}"
-                                    @click="selectDomain(domain.name)">
+                                    @click="selectDomain(domain.name)"
+                                >
                                     <span x-text="domain.name"></span>
-                                    <span class="text-xs text-gray-500" x-text="domain.apis.length"></span>
+                                    <span
+                                        class="text-xs text-gray-500"
+                                        x-text="domain.apis.length"
+                                    ></span>
                                 </div>
-                                <ul x-show="selectedDomain === domain.name" class="pl-4 mt-1 space-y-1">
-                                    <template x-for="api in domain.apis" :key="api.name">
+                                <ul
+                                    x-show="selectedDomain === domain.name"
+                                    class="pl-4 mt-1 space-y-1"
+                                >
+                                    <template
+                                        x-for="api in domain.apis"
+                                        :key="api.name"
+                                    >
                                         <li>
-                                            <div 
+                                            <div
                                                 class="cursor-pointer hover:bg-gray-100 p-1 rounded text-sm"
                                                 :class="{'bg-blue-100': selectedApi === api.url}"
                                                 @click="loadApi(api.url)"
-                                                x-text="api.name">
-                                            </div>
+                                                x-text="api.name"
+                                            ></div>
                                         </li>
                                     </template>
                                 </ul>
@@ -77,7 +184,10 @@
 
             <!-- Main Content Area -->
             <main class="flex-1 overflow-auto p-4">
-                <div id="swagger-container" class="bg-white shadow-md rounded-md p-2 h-full">
+                <div
+                    id="swagger-container"
+                    class="bg-white shadow-md rounded-md p-2 h-full"
+                >
                     <div id="swagger">Loading API documentation...</div>
                 </div>
             </main>
