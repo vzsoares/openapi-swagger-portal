@@ -88,10 +88,13 @@ document.addEventListener("alpine:init", () => {
                 }
             }
 
+            // Preserve the hash fragment (if any)
+            const currentHash = window.location.hash;
+
             window.history.replaceState(
                 {},
                 "",
-                `${window.location.pathname}?${urlParams}`,
+                `${window.location.pathname}?${urlParams}${currentHash}`,
             );
 
             // Initialize or update SwaggerUI
