@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
+        <title>API Portal</title>
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui.css"
@@ -11,7 +11,6 @@
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         />
-
         <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.18.2/swagger-ui-bundle.js"
@@ -23,26 +22,66 @@
             defer
             src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
         ></script>
+        <link rel="stylesheet" href="styles.css" />
     </head>
-    <body>
-        <div id="swagger">Loading....</div>
+    <body class="flex flex-col h-screen bg-gray-50" x-data="apiPortal">
+        <!-- Top Navigation Bar -->
+        <header class="bg-gray-800 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="flex items-center">
+                    <!-- Logo Placeholder -->
+                    <div class="text-2xl font-bold mr-8">API Portal</div>
+                </div>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="hover:text-blue-300">Home</a></li>
+                        <li><a href="#" class="hover:text-blue-300">Documentation</a></li>
+                        <li><a href="#" class="hover:text-blue-300">Support</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Sidebar Navigation -->
+            <aside class="w-64 bg-white shadow-md p-4 overflow-y-auto">
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold mb-2">Domains</h3>
+                    <ul class="space-y-2" id="domain-list">
+                        <template x-for="domain in domains" :key="domain.name">
+                            <li>
+                                <div 
+                                    class="cursor-pointer hover:bg-gray-100 p-2 rounded flex justify-between items-center"
+                                    :class="{'bg-blue-100': selectedDomain === domain.name}"
+                                    @click="selectDomain(domain.name)">
+                                    <span x-text="domain.name"></span>
+                                    <span class="text-xs text-gray-500" x-text="domain.apis.length"></span>
+                                </div>
+                                <ul x-show="selectedDomain === domain.name" class="pl-4 mt-1 space-y-1">
+                                    <template x-for="api in domain.apis" :key="api.name">
+                                        <li>
+                                            <div 
+                                                class="cursor-pointer hover:bg-gray-100 p-1 rounded text-sm"
+                                                :class="{'bg-blue-100': selectedApi === api.url}"
+                                                @click="loadApi(api.url)"
+                                                x-text="api.name">
+                                            </div>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-auto p-4">
+                <div id="swagger-container" class="bg-white shadow-md rounded-md p-2 h-full">
+                    <div id="swagger">Loading API documentation...</div>
+                </div>
+            </main>
+        </div>
     </body>
-    <script>
-        var swaggerUIOptions = {
-            url: "https://petstore.swagger.io/v2/swagger.json",
-            dom_id: "#swagger", // Determine what element to load swagger ui
-            docExpansion: "list",
-            deepLinking: true, // Enables dynamic deep linking for tags and operations
-            presets: [
-                SwaggerUIBundle.presets.apis,
-                SwaggerUIBundle.SwaggerUIStandalonePreset,
-            ],
-            plugins: [SwaggerUIBundle.plugins.DownloadUrl],
-        };
-
-        var ui = SwaggerUIBundle(swaggerUIOptions);
-
-        /** Export to window for use in custom js */
-        window.ui = ui;
-    </script>
+    <script src="app.js"></script>
 </html>

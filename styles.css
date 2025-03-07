@@ -1,0 +1,32 @@
+/* Swagger UI customization */
+.swagger-ui .opblock-tag {
+    font-size: 18px !important;
+}
+
+.swagger-ui .opblock .opblock-summary-operation-id,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-path__deprecated {
+    font-size: 14px !important;
+}
+
+/* Sidebar customization */
+aside {
+    min-width: 200px;
+}
+
+#swagger-container {
+    height: calc(100vh - 130px);
+    overflow: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .flex {
+        flex-direction: column;
+    }
+
+    aside {
+        width: 100%;
+        max-height: 200px;
+    }
+}
