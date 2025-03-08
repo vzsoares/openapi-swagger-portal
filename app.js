@@ -9,7 +9,7 @@ const config = {
  * Fetch your apis here!!!!!!!!!!!!!!
  * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
  */
-async function getDomains() {
+async function getSchemas() {
     return [
         {
             name: "Core Services",
@@ -75,7 +75,7 @@ document.addEventListener("alpine:init", () => {
         sidebarOpen: false,
 
         async init() {
-            this.domains = await getDomains();
+            this.domains = await getSchemas();
             // Set default sidebar state based on screen size
             this.sidebarOpen = window.innerWidth >= 768;
 

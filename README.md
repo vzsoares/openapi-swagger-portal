@@ -28,7 +28,7 @@ const config = {
     primaryColor: "#1e2939",
     secondaryColor: "#193cb8",
 };
-async function getDomains() {
+async function getSchemas() {
     // Maybe fetch from remote??
     return [
         {
