@@ -1,7 +1,7 @@
 // Change this config
 const config = {
     siteName: "API Portal",
-    supportUrl: "https://github.com",
+    supportUrl: "https://github.com/vzsoares/openapi-swagger-portal",
     primaryColor: "#1e2939",
     secondaryColor: "#193cb8",
 };
