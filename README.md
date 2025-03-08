@@ -24,7 +24,12 @@ Just copy the `index.html` file and `app.js` and serve it
 Edit the `app.js` file to add your own APIs. The structure follows this format:
 
 ```javascript
-const config = { siteName: "API Portal", supportUrl: "https://github.com" };
+const config = {
+    siteName: "API Portal",
+    supportUrl: "https://github.com",
+    primaryColor: "#1e2939",
+    secondaryColor: "#193cb8",
+};
 async function getDomains() {
     // Maybe fetch from remote??
     return [
