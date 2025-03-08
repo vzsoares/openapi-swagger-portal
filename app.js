@@ -1,5 +1,5 @@
 // Change this config
-const config = { siteName: "API Portal", supportUrl: "https://google.com" };
+const config = { siteName: "API Portal", supportUrl: "https://github.com" };
 /**
  * Fetch your apis here!!!!!!!!!!!!!!
  * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
