@@ -43,8 +43,7 @@
                 <!-- Sidebar toggle button -->
                 <button
                     @click="sidebarOpen = !sidebarOpen"
-                    class="md:hidden hover:text-secondary/90 focus:outline-none
-                    mx-2 cursor-pointer"
+                    class="md:hidden hover:text-secondary/90 focus:outline-none mx-2 cursor-pointer"
                 >
                     Apis
                 </button>
@@ -67,7 +66,7 @@
             </div>
         </header>
 
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1 overflow-hidden flex-col md:flex-row">
             <!-- Sidebar Navigation -->
             <aside
                 class="bg-white shadow-md p-4 overflow-y-auto transition-all duration-300 ease-in-out w-full md:w-auto min-w-[200px]"
