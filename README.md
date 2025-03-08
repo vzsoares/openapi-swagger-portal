@@ -13,9 +13,7 @@ A lightweight, minimalistic OpenAPI/Swagger documentation portal built with Alpi
 - 🔄 **Deep Linking** - Share direct links to specific APIs and endpoints
 - ⚡ **Lightweight** - Fast loading with minimal dependencies
 
-## Getting Started
-
-### Usage
+## Usage
 
 Just copy the `index.html` file and `app.js` and serve it
 
