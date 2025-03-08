@@ -1,5 +1,10 @@
 // Change this config
-const config = { siteName: "API Portal", supportUrl: "https://github.com" };
+const config = {
+    siteName: "API Portal",
+    supportUrl: "https://github.com",
+    primaryColor: "#1e2939",
+    secondaryColor: "#193cb8",
+};
 /**
  * Fetch your apis here!!!!!!!!!!!!!!
  * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
@@ -53,7 +58,15 @@ async function getDomains() {
 /////////////////////////////
 
 document.addEventListener("alpine:init", () => {
-    Alpine.data("config", () => ({ ...config }));
+    Alpine.data("config", () => ({
+        ...config,
+        css: `
+        @theme {
+            --color-primary: ${config.primaryColor};
+            --color-secondary: ${config.secondaryColor};
+        }
+`,
+    }));
     Alpine.data("apiPortal", () => ({
         domains: [],
         selectedDomain: null,
