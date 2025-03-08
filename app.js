@@ -1,53 +1,65 @@
+/**
+ * Fetch your apis here!!!!!!!!!!!!!!
+ * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
+ */
+async function getDomains() {
+    return [
+        {
+            name: "Core Services",
+            apis: [
+                {
+                    name: "Petstore API",
+                    url: "https://petstore.swagger.io/v2/swagger.json?1",
+                },
+                {
+                    name: "User Service",
+                    url: "https://petstore.swagger.io/v2/swagger.json?2",
+                },
+            ],
+        },
+        {
+            name: "Payment Services",
+            apis: [
+                {
+                    name: "Payment API",
+                    url: "https://petstore.swagger.io/v2/swagger.json?3",
+                },
+                {
+                    name: "Invoice Service",
+                    url: "https://petstore.swagger.io/v2/swagger.json?4",
+                },
+            ],
+        },
+        {
+            name: "Catalog Services",
+            apis: [
+                {
+                    name: "Products API",
+                    url: "https://petstore.swagger.io/v2/swagger.json?5",
+                },
+                {
+                    name: "Categories API",
+                    url: "https://petstore.swagger.io/v2/swagger.json?6",
+                },
+            ],
+        },
+    ];
+}
+
+/////////////////////////////
+// DONT TOUCH AFTER THIS LINE
+/////////////////////////////
+
 document.addEventListener("alpine:init", () => {
     Alpine.data("apiPortal", () => ({
-        domains: [
-            {
-                name: "Core Services",
-                apis: [
-                    {
-                        name: "Petstore API",
-                        url: "https://petstore.swagger.io/v2/swagger.json?1",
-                    },
-                    {
-                        name: "User Service",
-                        url: "https://petstore.swagger.io/v2/swagger.json?2",
-                    },
-                ],
-            },
-            {
-                name: "Payment Services",
-                apis: [
-                    {
-                        name: "Payment API",
-                        url: "https://petstore.swagger.io/v2/swagger.json?3",
-                    },
-                    {
-                        name: "Invoice Service",
-                        url: "https://petstore.swagger.io/v2/swagger.json?4",
-                    },
-                ],
-            },
-            {
-                name: "Catalog Services",
-                apis: [
-                    {
-                        name: "Products API",
-                        url: "https://petstore.swagger.io/v2/swagger.json?5",
-                    },
-                    {
-                        name: "Categories API",
-                        url: "https://petstore.swagger.io/v2/swagger.json?6",
-                    },
-                ],
-            },
-        ],
+        domains: [],
         selectedDomain: null,
         selectedApi: null,
         swaggerUI: null,
-        mobileMenuOpen: false,
         sidebarOpen: false,
 
-        init() {
+        async init() {
+            this.domains = await getDomains();
             // Set default sidebar state based on screen size
             this.sidebarOpen = window.innerWidth >= 768;
 
