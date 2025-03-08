@@ -1,3 +1,5 @@
+// Change this config
+const config = { siteName: "API Portal", supportUrl: "https://google.com" };
 /**
  * Fetch your apis here!!!!!!!!!!!!!!
  * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
@@ -51,6 +53,7 @@ async function getDomains() {
 /////////////////////////////
 
 document.addEventListener("alpine:init", () => {
+    Alpine.data("config", () => ({ ...config }));
     Alpine.data("apiPortal", () => ({
         domains: [],
         selectedDomain: null,

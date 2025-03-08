@@ -29,7 +29,11 @@
             <div class="container mx-auto flex justify-between items-center">
                 <div class="flex items-center">
                     <!-- Logo Placeholder -->
-                    <div class="text-2xl font-bold mr-0 md:mr-8">
+                    <div
+                        x-data="config"
+                        x-text="siteName"
+                        class="text-2xl font-bold mr-0 md:mr-8"
+                    >
                         API Portal
                     </div>
                 </div>
@@ -47,9 +51,11 @@
                     <ul class="flex space-x-6">
                         <li>
                             <a
-                                href="https://google.com"
+                                x-data="config"
+                                x-bind:href="supportUrl"
                                 class="hover:text-blue-300"
                                 target="_blank"
+                                href="#"
                                 >Support</a
                             >
                         </li>
