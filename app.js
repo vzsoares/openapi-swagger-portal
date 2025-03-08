@@ -79,16 +79,20 @@ document.addEventListener("alpine:init", () => {
             // Set default sidebar state based on screen size
             this.sidebarOpen = window.innerWidth >= 768;
 
-            // Initialize with the first API from the first domain
-            if (this.domains.length > 0 && this.domains[0].apis.length > 0) {
-                this.selectedDomain = this.domains[0].name;
-                this.loadApi(this.domains[0].apis[0].url);
-            }
-
             // Parse URL parameters to potentially load a specific API
             const urlParams = new URLSearchParams(window.location.search);
             const apiUrl = urlParams.get("url");
             const domain = urlParams.get("domain");
+
+            // Initialize with the first API from the first domain
+            if (
+                !apiUrl &&
+                this.domains.length > 0 &&
+                this.domains[0].apis.length > 0
+            ) {
+                this.selectedDomain = this.domains[0].name;
+                this.loadApi(this.domains[0].apis[0].url);
+            }
 
             if (apiUrl) {
                 this.loadApi(apiUrl);
