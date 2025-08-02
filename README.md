@@ -2,63 +2,76 @@
 
 ![API Portal Preview](/static/preview.png)
 
-A lightweight, minimalistic OpenAPI/Swagger documentation portal built with Alpine.js and TailwindCSS. This project provides a clean interface for exploring and testing multiple APIs swagger openapi schemas from different domains without any backend dependencies. Easily display multiple swagger UI's 🤩
+A lightweight, minimalistic OpenAPI/Swagger documentation portal built with **Alpine.js**, **TailwindCSS**, and **Vite**.
+Provides a clean interface for exploring and testing multiple API schemas (OpenAPI/Swagger) from different domains.
 
 ## Features
 
-- 🚀 **Zero Build Process** - Pure HTML, CSS, and JavaScript without complex build tools
-- 📱 **Fully Responsive** - Works seamlessly on desktop, tablet, and mobile devices
-- 🌐 **Multi-API Support** - Organize and display multiple APIs by domain category
-- 🔎 **Interactive Documentation** - Powered by Swagger UI for testing API endpoints
-- 🔄 **Deep Linking** - Share direct links to specific APIs and endpoints
-- ⚡ **Lightweight** - Fast loading with minimal dependencies
+- 🚀 **Vite-Powered** – Fast development server & optimized build
+- 📱 **Fully Responsive** – Works seamlessly on desktop, tablet, and mobile devices
+- 🌐 **Multi-API Support** – Organize and display multiple APIs by domain category
+- 🔎 **Interactive Documentation** – Powered by Swagger UI for testing API endpoints
+- 🔄 **Deep Linking** – Share direct links to specific APIs and endpoints
+- ⚡ **Lightweight** – Minimal dependencies and fast loading
 
 ## Usage
 
-Just copy the `index.html` file and `app.js` and serve it. 😸
+### Development
+
+```bash
+npm install
+npm run dev
+```
+
+### Production Build
+
+```bash
+npm run build
+npm run preview
+```
+
+Serve the `dist/` folder with any static server.
 
 ## Configuration
 
-Edit the `app.js` file to add your own APIs. The structure follows this format:
+All configuration is now in **`src/config.json`**:
 
-```javascript
-const config = {
-    siteName: "API Portal",
-    supportUrl: "https://github.com",
-    primaryColor: "#1e2939",
-    secondaryColor: "#193cb8",
-};
-async function getSchemas() {
-    // Maybe fetch from remote??
-    return [
+```json
+{
+    "siteName": "API Portal",
+    "supportUrl": "https://example.com",
+    "primaryColor": "#1e2939",
+    "secondaryColor": "#193cb8",
+    "schemas": [
         {
-            name: "Domain Name",
-            apis: [
+            "name": "Domain Name",
+            "apis": [
                 {
-                    name: "API Name",
-                    url: "https://path-to-your-swagger-definition.json",
-                },
-                // More APIs...
-            ],
-        },
-        // More domains...
-    ];
+                    "name": "API Name",
+                    "url": "https://path-to-your-swagger-definition.json"
+                }
+            ]
+        }
+    ]
 }
 ```
 
+Edit this file to set your portal name, colors, support link, and API definitions.
+
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Submit a Pull Request to improve features, styling, or documentation.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT – See [LICENSE](LICENSE).
 
 ## Acknowledgments
 
-- [Swagger UI](https://swagger.io/tools/swagger-ui/) for the excellent API documentation renderer
-- [Alpine.js](https://alpinejs.dev/) for the lightweight reactivity system
-- [TailwindCSS](https://tailwindcss.com/) for the utility-first CSS framework
+- [Swagger UI](https://swagger.io/tools/swagger-ui/) – API documentation renderer
+- [Alpine.js](https://alpinejs.dev/) – Lightweight reactivity system
+- [TailwindCSS](https://tailwindcss.com/) – Utility-first CSS framework
+- [Vite](https://vitejs.dev/) – Lightning-fast build tool
 
 ---
 
