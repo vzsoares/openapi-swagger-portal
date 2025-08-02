@@ -1,0 +1,47 @@
+{
+    "siteName": "API Portal",
+    "supportUrl": "https://github.com/vzsoares/swagger-portal",
+    "primaryColor": "216 31 17",
+    "secondaryColor": "227 76 41",
+    "schemas": [
+        {
+            "name": "Core Services",
+            "apis": [
+                {
+                    "name": "Petstore API",
+                    "url": "https://petstore.swagger.io/v2/swagger.json?1"
+                },
+                {
+                    "name": "User Service",
+                    "url": "https://petstore.swagger.io/v2/swagger.json?2"
+                }
+            ]
+        },
+        {
+            "name": "Payment Services",
+            "apis": [
+                {
+                    "name": "Payment API",
+                    "url": "https://petstore.swagger.io/v2/swagger.json?3"
+                },
+                {
+                    "name": "Invoice Service",
+                    "url": "https://petstore.swagger.io/v2/swagger.json?4"
+                }
+            ]
+        },
+        {
+            "name": "Catalog Services",
+            "apis": [
+                {
+                    "name": "Products API",
+                    "url": "https://petstore.swagger.io/v2/swagger.json?5"
+                },
+                {
+                    "name": "Categories API",
+                    "url": "https://petstore.swagger.io/v2/swagger.json?6"
+                }
+            ]
+        }
+    ]
+}

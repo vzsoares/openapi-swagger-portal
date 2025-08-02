@@ -1,6 +1,7 @@
 import Alpine from "alpinejs";
 import SwaggerUIBundle, { SwaggerUIOptions } from "swagger-ui";
 import "swagger-ui/dist/swagger-ui.css";
+import config from "./config.json";
 
 interface ApiPortalData {
     domains: Schema[];
@@ -28,13 +29,6 @@ interface ApiPortalData {
 //@ts-ignore
 window.Alpine = Alpine;
 
-// Change this config
-const config = {
-    siteName: "API Portal",
-    supportUrl: "https://github.com/vzsoares/swagger-portal",
-    primaryColor: "216 31 17",
-    secondaryColor: "227 76 41",
-};
 // LocalStorage utility functions
 const STORAGE_KEY = "api-portal-custom-schemas";
 
@@ -70,47 +64,7 @@ type Schema = {
  * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
  */
 async function getSchemas(): Promise<Schema[]> {
-    const defaultSchemas = [
-        {
-            name: "Core Services",
-            apis: [
-                {
-                    name: "Petstore API",
-                    url: "https://petstore.swagger.io/v2/swagger.json?1",
-                },
-                {
-                    name: "User Service",
-                    url: "https://petstore.swagger.io/v2/swagger.json?2",
-                },
-            ],
-        },
-        {
-            name: "Payment Services",
-            apis: [
-                {
-                    name: "Payment API",
-                    url: "https://petstore.swagger.io/v2/swagger.json?3",
-                },
-                {
-                    name: "Invoice Service",
-                    url: "https://petstore.swagger.io/v2/swagger.json?4",
-                },
-            ],
-        },
-        {
-            name: "Catalog Services",
-            apis: [
-                {
-                    name: "Products API",
-                    url: "https://petstore.swagger.io/v2/swagger.json?5",
-                },
-                {
-                    name: "Categories API",
-                    url: "https://petstore.swagger.io/v2/swagger.json?6",
-                },
-            ],
-        },
-    ];
+    const defaultSchemas = config.schemas;
 
     const customSchemas = getCustomSchemas();
 
@@ -143,10 +97,6 @@ async function getSchemas(): Promise<Schema[]> {
 
     return [...defaultSchemas, ...processedCustomSchemas] as Schema[];
 }
-
-/////////////////////////////
-// DONT TOUCH AFTER THIS LINE
-/////////////////////////////
 
 document.addEventListener("DOMContentLoaded", () => {
     Alpine.data("config", () => ({
