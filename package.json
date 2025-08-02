@@ -4,7 +4,7 @@
     "description": "A lightweight, minimalistic OpenAPI/Swagger documentation portal built with Alpine.js and TailwindCSS. Organize and display multiple APIs from different domains without any backend dependencies.",
     "scripts": {
         "dev": "vite",
-        "build": "vite build --base='/swagger-portal'",
+        "build": "vite build --base='/openapi-swagger-portal'",
         "preview": "vite preview"
     },
     "keywords": [
