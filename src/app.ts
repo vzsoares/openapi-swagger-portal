@@ -3,6 +3,12 @@ import SwaggerUIBundle, { SwaggerUIOptions } from "swagger-ui";
 import "swagger-ui/dist/swagger-ui.css";
 import config from "./config.json";
 
+declare global {
+    interface Window {
+        Alpine: typeof Alpine;
+    }
+}
+
 interface ApiPortalData {
     domains: Schema[];
     selectedDomain: string | null;
@@ -26,7 +32,16 @@ interface ApiPortalData {
     isCustomDomain(domainName: string): boolean;
 }
 
-//@ts-ignore
+type Schema = {
+    name: string;
+    apis: Array<{
+        name: string;
+        url: string;
+        isLocal: boolean;
+        jsonContent: string;
+    }>;
+};
+
 window.Alpine = Alpine;
 
 // LocalStorage utility functions
@@ -50,15 +65,6 @@ function saveCustomSchemas(schemas: Schema[]) {
     }
 }
 
-type Schema = {
-    name: string;
-    apis: Array<{
-        name: string;
-        url: string;
-        isLocal: boolean;
-        jsonContent: string;
-    }>;
-};
 /**
  * Get default schemas and merge with custom ones from localStorage
  * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
@@ -68,34 +74,7 @@ async function getSchemas(): Promise<Schema[]> {
 
     const customSchemas = getCustomSchemas();
 
-    // Recreate blob URLs for JSON content
-    const processedCustomSchemas = customSchemas.map((domain) => ({
-        ...domain,
-        apis: domain.apis.map((api) => {
-            if (api.isLocal && api.jsonContent) {
-                // Use a stable identifier for local JSON content
-                try {
-                    // Create a stable identifier for this API
-                    const apiId = `local-api-${btoa(api.name).replace(/[^a-zA-Z0-9]/g, "")}`;
-                    return {
-                        ...api,
-                        url: apiId, // Use API ID instead of URL
-                        localId: apiId,
-                    };
-                } catch (error) {
-                    console.error(
-                        "Error processing local JSON for API:",
-                        api.name,
-                        error,
-                    );
-                    return api; // Return original if there's an error
-                }
-            }
-            return api;
-        }),
-    }));
-
-    return [...defaultSchemas, ...processedCustomSchemas] as Schema[];
+    return [...defaultSchemas, ...customSchemas] as Schema[];
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -127,9 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             async init() {
                 this.domains = await getSchemas();
-                // Set default sidebar state based on screen size
-                this.sidebarOpen = window.innerWidth >= 768;
-
                 // Parse URL parameters to potentially load a specific API
                 const urlParams = new URLSearchParams(window.location.search);
                 const apiUrl = urlParams.get("url");
@@ -171,17 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (domain) {
                     this.selectDomain(domain);
                 }
-
-                // Close mobile menu when resizing to desktop
-                window.addEventListener("resize", () => {
-                    if (window.innerWidth >= 1024) {
-                    }
-                    if (window.innerWidth >= 768) {
-                        this.sidebarOpen = true;
-                    } else {
-                        this.sidebarOpen = false;
-                    }
-                });
             },
 
             selectDomain(domainName) {
@@ -241,40 +206,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
                 // Initialize or update SwaggerUI
-                let options: SwaggerUIOptions;
+                let options: SwaggerUIOptions = {
+                    dom_id: "#swagger",
+                    docExpansion: "list",
+                    deepLinking: true,
+                    presets: [
+                        SwaggerUIBundle.presets.apis,
+                        SwaggerUIBundle.presets.base,
+                    ],
+                    plugins: [],
+                };
 
                 if (isLocalApi && jsonContent) {
                     // For local JSON APIs, use spec instead of url
                     try {
                         const parsedJson = JSON.parse(jsonContent);
-                        options = {
-                            spec: parsedJson,
-                            dom_id: "#swagger",
-                            docExpansion: "list",
-                            deepLinking: true,
-                            presets: [
-                                SwaggerUIBundle.presets.apis,
-                                SwaggerUIBundle.presets.base,
-                            ],
-                            plugins: [],
-                        };
+                        options.spec = parsedJson;
                     } catch (error) {
                         console.error("Error parsing local JSON:", error);
                         return;
                     }
                 } else {
                     // For remote URLs, use url
-                    options = {
-                        url: url,
-                        dom_id: "#swagger",
-                        docExpansion: "list",
-                        deepLinking: true,
-                        presets: [
-                            SwaggerUIBundle.presets.apis,
-                            SwaggerUIBundle.presets.base,
-                        ],
-                        plugins: [],
-                    };
+                    options.url = url;
                 }
 
                 if (!this.swaggerUI) {
@@ -298,11 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         this.swaggerUI.specActions.updateUrl(url);
                         this.swaggerUI.specActions.download(url);
                     }
-                }
-
-                // Close sidebar on mobile after selecting an API
-                if (window.innerWidth < 768) {
-                    this.sidebarOpen = false;
                 }
             },
 
