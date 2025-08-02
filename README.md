@@ -1,62 +1,65 @@
-# Vite + Alpine.js + Tailwind CSS Template
+# Minimalistic API Portal
 
-![Template Stack](https://img.shields.io/badge/stack-Vite%20%7C%20Alpine.js%20%7C%20Tailwind%20CSS-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![API Portal Preview](/preview.png)
 
-A lightweight starter template combining Vite, Alpine.js, and Tailwind CSS for building modern, interactive web applications.
+A lightweight, minimalistic OpenAPI/Swagger documentation portal built with Alpine.js and TailwindCSS. This project provides a clean interface for exploring and testing multiple APIs swagger openapi schemas from different domains without any backend dependencies. Easily display multiple swagger UI's 🤩
 
 ## Features
 
-- ⚡️ **Vite** - Lightning fast development server with HMR
-- 🗻 **Alpine.js** - Minimal JavaScript framework for adding interactivity
-- 🎨 **Tailwind CSS** - Utility-first CSS framework
-- 📦 **TypeScript** - Type safety for your JavaScript
+- 🚀 **Zero Build Process** - Pure HTML, CSS, and JavaScript without complex build tools
+- 📱 **Fully Responsive** - Works seamlessly on desktop, tablet, and mobile devices
+- 🌐 **Multi-API Support** - Organize and display multiple APIs by domain category
+- 🔎 **Interactive Documentation** - Powered by Swagger UI for testing API endpoints
+- 🔄 **Deep Linking** - Share direct links to specific APIs and endpoints
+- ⚡ **Lightweight** - Fast loading with minimal dependencies
 
-## Quick Start
+## Usage
 
-```bash
-# Clone the repository
-git clone https://github.com/vzsoares/vite-alpine-tailwind-temaplate.git my-project
+Just copy the `index.html` file and `app.js` and serve it. 😸
 
-# Navigate to the directory
-cd my-project
+## Configuration
 
-# Install dependencies
-npm install
+Edit the `app.js` file to add your own APIs. The structure follows this format:
 
-# Start development server
-npm run dev
+```javascript
+const config = {
+    siteName: "API Portal",
+    supportUrl: "https://github.com",
+    primaryColor: "#1e2939",
+    secondaryColor: "#193cb8",
+};
+async function getSchemas() {
+    // Maybe fetch from remote??
+    return [
+        {
+            name: "Domain Name",
+            apis: [
+                {
+                    name: "API Name",
+                    url: "https://path-to-your-swagger-definition.json",
+                },
+                // More APIs...
+            ],
+        },
+        // More domains...
+    ];
+}
 ```
 
-## Build for Production
+## Contributing
 
-```bash
-npm run build
-```
-
-## Preview Production Build
-
-```bash
-npm run preview
-```
-
-## Project Structure
-
-```
-/
-├── public/        # Static assets
-├── src/           # Source files
-│   ├── app.ts     # Main Alpine.js application
-│   └── styles.css # Main CSS file with Tailwind imports
-├── index.html     # Entry HTML file
-├── vite.config.js # Vite configuration
-└── tailwind.config.js # Tailwind configuration
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-[MIT License](LICENSE)
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [Swagger UI](https://swagger.io/tools/swagger-ui/) for the excellent API documentation renderer
+- [Alpine.js](https://alpinejs.dev/) for the lightweight reactivity system
+- [TailwindCSS](https://tailwindcss.com/) for the utility-first CSS framework
 
 ---
 
-Created by [vzsoares](https://github.com/vzsoares)
+Made with ❤️ for API consumers and developers

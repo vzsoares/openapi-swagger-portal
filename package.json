@@ -1,36 +1,22 @@
 {
-    "name": "vite-alpine-tailwind-temaplate",
+    "name": "swagger-portal",
     "version": "1.0.0",
-    "description": "A lightweight starter template combining Vite, Alpine.js and Tailwind CSS for building modern, interactive web applications",
+    "description": "",
     "scripts": {
         "dev": "vite",
         "build": "vite build --base='/vite-alpine-tailwind-temaplate'",
         "preview": "vite preview"
     },
-    "keywords": [
-        "vite",
-        "alpinejs",
-        "tailwindcss",
-        "template",
-        "starter",
-        "frontend",
-        "spa",
-        "web-development",
-        "typescript"
-    ],
+    "keywords": [],
     "author": "vzsoares",
     "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/vzsoares/vite-alpine-tailwind-temaplate.git"
-    },
-    "homepage": "https://github.com/vzsoares/vite-alpine-tailwind-temaplate",
-    "bugs": {
-        "url": "https://github.com/vzsoares/vite-alpine-tailwind-temaplate/issues"
-    },
+    "repository": {},
+    "homepage": "https://github.com/vzsoares/swagger-portal",
+    "bugs": {},
     "devDependencies": {
         "@tailwindcss/postcss": "^4.0.13",
         "@types/alpinejs": "^3.13.11",
+        "@types/swagger-ui": "^5.21.1",
         "alpinejs": "^3.13.0",
         "autoprefixer": "^10.4.14",
         "postcss": "^8.4.24",
@@ -38,5 +24,7 @@
         "typescript": "^5.8.2",
         "vite": "^4.3.9"
     },
-    "dependencies": {}
+    "dependencies": {
+        "swagger-ui": "^5.27.1"
+    }
 }

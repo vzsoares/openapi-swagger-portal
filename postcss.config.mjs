@@ -1,7 +1,17 @@
 export default {
     plugins: {
         /** @type {import('tailwindcss').Config} */
-        tailwindcss: { content: ["./*.html", "./*.js"] },
+        tailwindcss: {
+            content: ["./*.html", "./*.js"],
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "hsl(var(--color-primary))",
+                        secondary: "hsl(var(--color-secondary))",
+                    },
+                },
+            },
+        },
         autoprefixer: {
             theme: {
                 extend: {
