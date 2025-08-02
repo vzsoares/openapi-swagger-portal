@@ -9,6 +9,18 @@ declare global {
     }
 }
 
+type Api = {
+    name: string;
+    url: string;
+    isLocal?: boolean;
+    jsonContent?: string;
+};
+
+type Schema = {
+    name: string;
+    apis: Api[];
+};
+
 interface ApiPortalData {
     domains: Schema[];
     selectedDomain: string | null;
@@ -16,12 +28,13 @@ interface ApiPortalData {
     swaggerUI: any | null;
     sidebarOpen: boolean;
     showAddForm: boolean;
-    addingToDomain: string;
-    newDomainName: string;
-    newApiName: string;
-    newApiUrl: string;
-    inputMode: "url" | "json";
-    newApiJson: string;
+    formData: {
+        domainName: string;
+        apiName: string;
+        apiUrl: string;
+        inputMode: "url" | "json";
+        apiJson: string;
+    };
     init(): Promise<void>;
     selectDomain(domainName: string): void;
     loadApi(url: string): void;
@@ -32,60 +45,35 @@ interface ApiPortalData {
     isCustomDomain(domainName: string): boolean;
 }
 
-type Schema = {
-    name: string;
-    apis: Array<{
-        name: string;
-        url: string;
-        isLocal: boolean;
-        jsonContent: string;
-    }>;
-};
-
 window.Alpine = Alpine;
 
-// LocalStorage utility functions
 const STORAGE_KEY = "api-portal-custom-schemas";
 
-function getCustomSchemas() {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        return (stored ? JSON.parse(stored) : []) as Schema[];
-    } catch (error) {
-        console.error("Error loading custom schemas from localStorage:", error);
-        return [];
-    }
-}
+const storage = {
+    get: (): Schema[] => {
+        try {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        } catch {
+            return [];
+        }
+    },
+    save: (schemas: Schema[]) => {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(schemas));
+        } catch (error) {
+            console.error("Storage error:", error);
+        }
+    },
+};
 
-function saveCustomSchemas(schemas: Schema[]) {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(schemas));
-    } catch (error) {
-        console.error("Error saving custom schemas to localStorage:", error);
-    }
-}
-
-/**
- * Get default schemas and merge with custom ones from localStorage
- * @returns {Promise<Array<{name: string, apis: Array<{name: string, url: string}>}>}
- */
-async function getSchemas(): Promise<Schema[]> {
-    const defaultSchemas = config.schemas;
-
-    const customSchemas = getCustomSchemas();
-
-    return [...defaultSchemas, ...customSchemas] as Schema[];
-}
+const getSchemas = async (): Promise<Schema[]> => [
+    ...config.schemas,
+    ...storage.get(),
+];
 
 document.addEventListener("DOMContentLoaded", () => {
     Alpine.data("config", () => ({
         ...config,
-        css: `
-        @theme {
-            --color-primary: ${config.primaryColor};
-            --color-secondary: ${config.secondaryColor};
-        }
-`,
     }));
 
     Alpine.data(
@@ -97,12 +85,13 @@ document.addEventListener("DOMContentLoaded", () => {
             swaggerUI: null,
             sidebarOpen: false,
             showAddForm: false,
-            addingToDomain: "",
-            newDomainName: "",
-            newApiName: "",
-            newApiUrl: "",
-            inputMode: "url", // 'url' or 'json'
-            newApiJson: "",
+            formData: {
+                domainName: "",
+                apiName: "",
+                apiUrl: "",
+                inputMode: "url",
+                apiJson: "",
+            },
 
             async init() {
                 this.domains = await getSchemas();
@@ -257,116 +246,95 @@ document.addEventListener("DOMContentLoaded", () => {
 
             openAddForm(domainName = "") {
                 this.showAddForm = true;
-                this.addingToDomain = domainName;
-                this.newDomainName = domainName;
-                this.newApiName = "";
-                this.newApiUrl = "";
-                this.inputMode = "url";
-                this.newApiJson = "";
+                this.formData = {
+                    domainName,
+                    apiName: "",
+                    apiUrl: "",
+                    inputMode: "url",
+                    apiJson: "",
+                };
             },
 
             closeAddForm() {
                 this.showAddForm = false;
-                this.addingToDomain = "";
-                this.newDomainName = "";
-                this.newApiName = "";
-                this.newApiUrl = "";
-                this.inputMode = "url";
-                this.newApiJson = "";
+                this.formData = {
+                    domainName: "",
+                    apiName: "",
+                    apiUrl: "",
+                    inputMode: "url",
+                    apiJson: "",
+                };
             },
 
             async addSchema() {
-                if (!this.newApiName) {
-                    alert("Please fill in the API name");
-                    return;
-                }
+                const { apiName, apiUrl, inputMode, apiJson, domainName } =
+                    this.formData;
 
-                if (this.inputMode === "url" && !this.newApiUrl) {
-                    alert("Please provide a valid URL");
-                    return;
-                }
+                if (!apiName) return alert("Please fill in the API name");
+                if (inputMode === "url" && !apiUrl)
+                    return alert("Please provide a valid URL");
+                if (inputMode === "json" && !apiJson.trim())
+                    return alert("Please paste the JSON content");
 
-                if (this.inputMode === "json" && !this.newApiJson.trim()) {
-                    alert("Please paste the JSON content");
-                    return;
-                }
-
-                let apiUrl = this.newApiUrl;
-
-                // If JSON mode, just validate the JSON
-                if (this.inputMode === "json") {
+                let finalUrl = apiUrl;
+                if (inputMode === "json") {
                     try {
-                        // Validate JSON
-                        JSON.parse(this.newApiJson);
-                        // Create a stable identifier for this API
-                        apiUrl = `local-api-${btoa(this.newApiName).replace(/[^a-zA-Z0-9]/g, "")}`;
-                    } catch (error) {
-                        alert(
+                        JSON.parse(apiJson);
+                        finalUrl = `local-api-${btoa(apiName).replace(/[^a-zA-Z0-9]/g, "")}`;
+                    } catch {
+                        return alert(
                             "Invalid JSON format. Please check your JSON syntax.",
                         );
-                        return;
                     }
                 }
 
-                const customSchemas = getCustomSchemas();
-                const domainName = this.newDomainName || "Custom APIs";
+                const customSchemas = storage.get();
+                const targetDomain = domainName || "Custom APIs";
+                let domain = customSchemas.find((d) => d.name === targetDomain);
 
-                // Find existing domain or create new one
-                let domain = customSchemas.find((d) => d.name === domainName);
                 if (!domain) {
-                    domain = { name: domainName, apis: [] };
+                    domain = { name: targetDomain, apis: [] };
                     customSchemas.push(domain);
                 }
 
-                // Check for duplicate API names in the domain
-                if (domain.apis.some((api) => api.name === this.newApiName)) {
-                    alert("An API with this name already exists in the domain");
-                    return;
+                if (domain.apis.some((api) => api.name === apiName)) {
+                    return alert(
+                        "An API with this name already exists in the domain",
+                    );
                 }
 
-                // Add new API
                 domain.apis.push({
-                    name: this.newApiName,
-                    url: apiUrl,
-                    isLocal: this.inputMode === "json", // Flag to track local JSON APIs
-                    jsonContent:
-                        this.inputMode === "json" ? this.newApiJson : "", // Store JSON content
+                    name: apiName,
+                    url: finalUrl,
+                    isLocal: inputMode === "json",
+                    jsonContent: inputMode === "json" ? apiJson : "",
                 });
 
-                // Save to localStorage
-                saveCustomSchemas(customSchemas);
-
-                // Refresh domains
+                storage.save(customSchemas);
                 this.domains = await getSchemas();
-
                 this.closeAddForm();
             },
 
-            async removeCustomApi(domainName, apiName) {
-                if (!confirm("Are you sure you want to remove this API?")) {
+            async removeCustomApi(domainName: string, apiName: string) {
+                if (!confirm("Are you sure you want to remove this API?"))
                     return;
-                }
 
-                const customSchemas = getCustomSchemas();
+                const customSchemas = storage.get();
                 const domainIndex = customSchemas.findIndex(
                     (d) => d.name === domainName,
                 );
-
                 if (domainIndex === -1) return;
 
                 const domain = customSchemas[domainIndex];
-
                 domain.apis = domain.apis.filter((api) => api.name !== apiName);
 
-                // Remove domain if no APIs left
                 if (domain.apis.length === 0) {
                     customSchemas.splice(domainIndex, 1);
                 }
 
-                saveCustomSchemas(customSchemas);
+                storage.save(customSchemas);
                 this.domains = await getSchemas();
 
-                // Clear selection if removed API was selected
                 if (
                     this.selectedApi &&
                     this.domains.every((d) =>
@@ -377,9 +345,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             },
 
-            isCustomDomain(domainName) {
-                const customSchemas = getCustomSchemas();
-                return customSchemas.some((d) => d.name === domainName);
+            isCustomDomain(domainName: string) {
+                return storage.get().some((d) => d.name === domainName);
             },
         }),
     );

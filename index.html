@@ -168,21 +168,22 @@
         >
             <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
                 <h3 class="text-lg font-semibold mb-4">
-                    <span x-show="addingToDomain">Add API to "</span
-                    ><span x-text="addingToDomain"></span
-                    ><span x-show="addingToDomain">"</span>
-                    <span x-show="!addingToDomain">Add New API</span>
+                    <span x-show="formData.domainName">Add API to "</span
+                    ><span x-text="formData.domainName"></span
+                    ><span x-show="formData.domainName">"</span>
+                    <span x-show="!formData.domainName">Add New API</span>
                 </h3>
 
                 <form @submit.prevent="addSchema()">
-                    <div class="mb-4" x-show="!addingToDomain">
+                    <div class="mb-4">
                         <label class="block text-sm font-medium mb-2"
                             >Domain Name</label
                         >
                         <input
                             type="text"
-                            x-model="newDomainName"
+                            x-model="formData.domainName"
                             placeholder="e.g., Custom APIs"
+                            required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
                         />
                     </div>
@@ -193,7 +194,7 @@
                         >
                         <input
                             type="text"
-                            x-model="newApiName"
+                            x-model="formData.apiName"
                             placeholder="e.g., My Custom API"
                             required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
@@ -208,7 +209,7 @@
                             <label class="flex items-center">
                                 <input
                                     type="radio"
-                                    x-model="inputMode"
+                                    x-model="formData.inputMode"
                                     value="url"
                                     class="mr-2"
                                 />
@@ -217,7 +218,7 @@
                             <label class="flex items-center">
                                 <input
                                     type="radio"
-                                    x-model="inputMode"
+                                    x-model="formData.inputMode"
                                     value="json"
                                     class="mr-2"
                                 />
@@ -226,27 +227,27 @@
                         </div>
                     </div>
 
-                    <div class="mb-6" x-show="inputMode === 'url'">
+                    <div class="mb-6" x-show="formData.inputMode === 'url'">
                         <label class="block text-sm font-medium mb-2"
                             >OpenAPI/Swagger URL *</label
                         >
                         <input
                             type="url"
-                            x-model="newApiUrl"
+                            x-model="formData.apiUrl"
                             placeholder="https://api.example.com/swagger.json"
-                            :required="inputMode === 'url'"
+                            :required="formData.inputMode === 'url'"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
                         />
                     </div>
 
-                    <div class="mb-6" x-show="inputMode === 'json'">
+                    <div class="mb-6" x-show="formData.inputMode === 'json'">
                         <label class="block text-sm font-medium mb-2"
                             >OpenAPI/Swagger JSON *</label
                         >
                         <textarea
-                            x-model="newApiJson"
+                            x-model="formData.apiJson"
                             placeholder='{"openapi": "3.0.0", "info": {"title": "My API", "version": "1.0.0"}, ...}'
-                            :required="inputMode === 'json'"
+                            :required="formData.inputMode === 'json'"
                             rows="8"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary font-mono text-sm"
                         ></textarea>
@@ -275,5 +276,4 @@
             </div>
         </div>
     </body>
-    <style type="text/tailwindcss" x-data="config" x-html="css"></style>
 </html>
