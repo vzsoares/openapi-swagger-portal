@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build --base='/openapi-swagger-portal'",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "release": "release-it"
     },
     "keywords": [
         "swagger",
