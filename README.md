@@ -1,6 +1,6 @@
 # Minimalistic API Portal
 
-![API Portal Preview](/preview.png)
+![API Portal Preview](/static/preview.png)
 
 A lightweight, minimalistic OpenAPI/Swagger documentation portal built with Alpine.js and TailwindCSS. This project provides a clean interface for exploring and testing multiple APIs swagger openapi schemas from different domains without any backend dependencies. Easily display multiple swagger UI's 🤩
 
