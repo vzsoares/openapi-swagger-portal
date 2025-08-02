@@ -73,7 +73,16 @@
                 :class="{'w-64 md:w-64': sidebarOpen, 'w-0 md:w-64 hidden md:block': !sidebarOpen}"
             >
                 <div class="mb-4">
-                    <h3 class="text-lg font-semibold mb-2">Domains</h3>
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold">Domains</h3>
+                        <button
+                            @click="openAddForm()"
+                            class="bg-secondary text-white px-2 py-1 rounded text-xs hover:bg-secondary/90"
+                            title="Add New API"
+                        >
+                            + Add API
+                        </button>
+                    </div>
                     <ul class="space-y-2" id="domain-list">
                         <template x-for="domain in domains" :key="domain.name">
                             <li>
@@ -82,11 +91,23 @@
                                     :class="{'bg-secondary/20': selectedDomain === domain.name}"
                                     @click="selectDomain(domain.name)"
                                 >
-                                    <span x-text="domain.name"></span>
-                                    <span
-                                        class="text-xs text-primary/50"
-                                        x-text="domain.apis.length"
-                                    ></span>
+                                    <div class="flex items-center gap-2">
+                                        <span x-text="domain.name"></span>
+                                        <span
+                                            class="text-xs text-primary/50"
+                                            x-text="domain.apis.length"
+                                        ></span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <button
+                                            x-show="isCustomDomain(domain.name)"
+                                            @click.stop="openAddForm(domain.name)"
+                                            class="text-secondary hover:text-secondary/70 text-xs"
+                                            title="Add API to this domain"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
                                 </div>
                                 <ul
                                     x-show="selectedDomain === domain.name"
@@ -98,11 +119,20 @@
                                     >
                                         <li>
                                             <div
-                                                class="cursor-pointer hover:bg-primary/10 p-1 rounded text-sm"
+                                                class="cursor-pointer hover:bg-primary/10 p-1 rounded text-sm flex justify-between items-center group"
                                                 :class="{'bg-secondary/20': selectedApi === api.url}"
                                                 @click="loadApi(api.url)"
-                                                x-text="api.name"
-                                            ></div>
+                                            >
+                                                <span x-text="api.name"></span>
+                                                <button
+                                                    x-show="isCustomDomain(domain.name)"
+                                                    @click.stop="removeCustomApi(domain.name, api.name)"
+                                                    class="text-red-500 hover:text-red-700 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    title="Remove this API"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
                                         </li>
                                     </template>
                                 </ul>
@@ -121,6 +151,121 @@
                     <div id="swagger">Loading API documentation...</div>
                 </div>
             </main>
+        </div>
+
+        <!-- Add API Modal -->
+        <div
+            x-show="showAddForm"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            @click.self="closeAddForm()"
+        >
+            <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+                <h3 class="text-lg font-semibold mb-4">
+                    <span x-show="addingToDomain">Add API to "</span
+                    ><span x-text="addingToDomain"></span
+                    ><span x-show="addingToDomain">"</span>
+                    <span x-show="!addingToDomain">Add New API</span>
+                </h3>
+
+                <form @submit.prevent="addSchema()">
+                    <div class="mb-4" x-show="!addingToDomain">
+                        <label class="block text-sm font-medium mb-2"
+                            >Domain Name</label
+                        >
+                        <input
+                            type="text"
+                            x-model="newDomainName"
+                            placeholder="e.g., Custom APIs"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
+                        />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2"
+                            >API Name *</label
+                        >
+                        <input
+                            type="text"
+                            x-model="newApiName"
+                            placeholder="e.g., My Custom API"
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
+                        />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2"
+                            >Input Method *</label
+                        >
+                        <div class="flex gap-4 mb-3">
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    x-model="inputMode"
+                                    value="url"
+                                    class="mr-2"
+                                />
+                                URL
+                            </label>
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    x-model="inputMode"
+                                    value="json"
+                                    class="mr-2"
+                                />
+                                Paste JSON
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-6" x-show="inputMode === 'url'">
+                        <label class="block text-sm font-medium mb-2"
+                            >OpenAPI/Swagger URL *</label
+                        >
+                        <input
+                            type="url"
+                            x-model="newApiUrl"
+                            placeholder="https://api.example.com/swagger.json"
+                            :required="inputMode === 'url'"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary"
+                        />
+                    </div>
+
+                    <div class="mb-6" x-show="inputMode === 'json'">
+                        <label class="block text-sm font-medium mb-2"
+                            >OpenAPI/Swagger JSON *</label
+                        >
+                        <textarea
+                            x-model="newApiJson"
+                            placeholder='{"openapi": "3.0.0", "info": {"title": "My API", "version": "1.0.0"}, ...}'
+                            :required="inputMode === 'json'"
+                            rows="8"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary font-mono text-sm"
+                        ></textarea>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Paste your complete OpenAPI/Swagger JSON
+                            specification here
+                        </p>
+                    </div>
+
+                    <div class="flex gap-3 justify-end">
+                        <button
+                            type="button"
+                            @click="closeAddForm()"
+                            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary/90"
+                        >
+                            Add API
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </body>
     <script src="app.js"></script>

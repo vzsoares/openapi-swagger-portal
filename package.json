@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "app.js",
     "scripts": {
-        "dev": "npx live-server"
+        "dev": "cd src && npx live-server"
     },
     "keywords": [],
     "author": "",
