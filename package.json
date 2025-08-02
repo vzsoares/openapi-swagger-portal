@@ -1,6 +1,6 @@
 {
     "name": "swagger-portal",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "A lightweight, minimalistic OpenAPI/Swagger documentation portal built with Alpine.js and TailwindCSS. Organize and display multiple APIs from different domains without any backend dependencies.",
     "scripts": {
         "dev": "vite",
@@ -45,11 +45,24 @@
         "alpinejs": "^3.13.0",
         "autoprefixer": "^10.4.14",
         "postcss": "^8.4.24",
+        "release-it": "^19.0.4",
         "tailwindcss": "^3.3.2",
         "typescript": "^5.8.2",
         "vite": "^4.3.9"
     },
     "dependencies": {
         "swagger-ui": "^5.27.1"
+    },
+    "release-it": {
+        "git": {
+            "push": true
+        },
+        "github": {
+            "release": true,
+            "releaseName": "Release ${version}"
+        },
+        "npm": {
+            "publish": false
+        }
     }
 }
