@@ -1,12 +1,55 @@
 {
-    "name": "openapi-portal",
+    "name": "swagger-portal",
     "version": "1.0.0",
-    "main": "app.js",
+    "description": "A lightweight, minimalistic OpenAPI/Swagger documentation portal built with Alpine.js and TailwindCSS. Organize and display multiple APIs from different domains without any backend dependencies.",
     "scripts": {
-        "dev": "cd src && npx live-server"
+        "dev": "vite",
+        "build": "vite build --base='/swagger-portal'",
+        "preview": "vite preview"
     },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "description": ""
+    "keywords": [
+        "swagger",
+        "openapi",
+        "api-documentation",
+        "swagger-ui",
+        "alpine.js",
+        "tailwindcss",
+        "documentation-portal",
+        "api-portal",
+        "frontend",
+        "lightweight",
+        "zero-build",
+        "responsive"
+    ],
+    "author": {
+        "name": "vzsoares",
+        "url": "https://github.com/vzsoares"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vzsoares/swagger-portal.git"
+    },
+    "homepage": "https://github.com/vzsoares/swagger-portal",
+    "bugs": {
+        "url": "https://github.com/vzsoares/swagger-portal/issues"
+    },
+    "main": "index.html",
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4.0.13",
+        "@types/alpinejs": "^3.13.11",
+        "@types/swagger-ui": "^5.21.1",
+        "alpinejs": "^3.13.0",
+        "autoprefixer": "^10.4.14",
+        "postcss": "^8.4.24",
+        "tailwindcss": "^3.3.2",
+        "typescript": "^5.8.2",
+        "vite": "^4.3.9"
+    },
+    "dependencies": {
+        "swagger-ui": "^5.27.1"
+    }
 }
